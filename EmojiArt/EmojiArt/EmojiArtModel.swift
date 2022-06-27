@@ -8,7 +8,7 @@
 import Foundation
 
 struct EmojiArtModel {
-    let background: Background = .bank
+    var background: Background = .bank
     var emojis: [Emoji] = []
     
     init() {}
@@ -23,9 +23,9 @@ struct EmojiArtModel {
     
     struct Emoji: Identifiable {
         let text: String
-        let x: Int
-        let y: Int
-        let size: Int
+        var x: Int
+        var y: Int
+        var size: Int
         let id: Int
         
         fileprivate init(text: String, x: Int, y: Int, size: Int, id: Int) {
