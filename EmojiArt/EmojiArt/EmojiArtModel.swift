@@ -8,36 +8,32 @@
 import Foundation
 
 struct EmojiArtModel {
-    let background: Background
-    let emojis: [Emoji] = []
+    let background: Background = .bank
+    var emojis: [Emoji] = []
     
-    struct Emoji {
-        let text: String
-        let x: Double
-        let y: Double
+    init() {}
+    
+    private var uniqueEmojiId: Int = 0
+    
+    mutating func addEmoji(text: String, at location: (x: Int, y: Int), size: Int) {
+        uniqueEmojiId += 1
+        let emoji = Emoji(text: text, x: location.x, y: location.y, size: size, id: uniqueEmojiId)
+        emojis.append(emoji)
     }
     
-    enum Background {
-        case bank
-        case url(URL)
-        case imageData(Data)
+    struct Emoji: Identifiable {
+        let text: String
+        let x: Int
+        let y: Int
+        let size: Int
+        let id: Int
         
-        var url: URL? {
-            switch self {
-            case .url(let uRL):
-                return uRL
-            default:
-                return nil
-            }
-        }
-        
-        var imageData: Data? {
-            switch self {
-            case .imageData(let data):
-                return data
-            default:
-                return nil
-            }
+        fileprivate init(text: String, x: Int, y: Int, size: Int, id: Int) {
+            self.text = text
+            self.x = x
+            self.y = y
+            self.size = size
+            self.id = id
         }
     }
 }
