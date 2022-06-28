@@ -8,7 +8,13 @@
 import SwiftUI
 
 class EmojiArtDocument: ObservableObject {
-     @Published private(set) var emojiArt = EmojiArtModel()
+    @Published private(set) var emojiArt: EmojiArtModel
+    
+    init() {
+        emojiArt = EmojiArtModel()
+        emojiArt.addEmoji(text: "☺️", at: (-200, 100), size: 40)
+        emojiArt.addEmoji(text: "🍎", at: (50, 100), size: 80)
+    }
     
     var emojis: [EmojiArtModel.Emoji] {
         emojiArt.emojis
@@ -41,10 +47,4 @@ class EmojiArtDocument: ObservableObject {
         }
     }
     
-}
-
-extension Collection where Element: Identifiable {
-    func index(matching element: Element) -> Self.Index? {
-        return self.firstIndex(where: { $0.id == element.id })
-    }
 }
