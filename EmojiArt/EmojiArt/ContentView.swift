@@ -28,20 +28,36 @@ struct ContentView: View {
                         .position(position(for: emoji, in: geometry))
                 }
             }
-            .onDrop(of: [.plainText], isTargeted: nil) { providers, location in
+            .onDrop(of: [.plainText, .url, .image], isTargeted: nil) { providers, location in
                 return drop(providers: providers, at: location, in: geometry)
             }
         }
     }
     
     private func drop(providers: [NSItemProvider], at location: CGPoint, in geometry: GeometryProxy) -> Bool {
-        return providers.loadObjects(offType: String.self) { string in
-            if let emoji = string.first, emoji.isEmoji {
-                viewModel.addEmoji(String(emoji),
-                                   at: convertToEmojiCoordinates(location, in: geometry),
-                                   size: emojiDefaultFontSize)
+        var found = providers.loadObjects(offType: URL.self) { url in
+            viewModel.setBackground(.url(url))
+        }
+        
+        if !found {
+            found = providers.loadObjects(offType: UIImage.self) { image in
+                if let data = image.jpegData(compressionQuality: 1) {
+                    viewModel.setBackground(.imageData(data))
+                }
             }
         }
+        
+        if !found {
+            found = providers.loadObjects(offType: String.self) { string in
+                if let emoji = string.first, emoji.isEmoji {
+                    viewModel.addEmoji(String(emoji),
+                                       at: convertToEmojiCoordinates(location, in: geometry),
+                                       size: emojiDefaultFontSize)
+                }
+            }
+        }
+        
+        return found
     }
     
     private func position(for emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
