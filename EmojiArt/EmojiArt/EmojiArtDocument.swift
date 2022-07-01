@@ -7,8 +7,21 @@
 
 import SwiftUI
 
+enum BackgroundFetchStatus {
+    case fetching
+    case idle
+}
+
 class EmojiArtDocument: ObservableObject {
-    @Published private(set) var emojiArt: EmojiArtModel
+    @Published private(set) var emojiArt: EmojiArtModel {
+        didSet {
+            if emojiArt.background != oldValue.background {
+                fetchBackgroundImage()
+            }
+        }
+    }
+    @Published var backgroundImage: UIImage?
+    @Published var backgroundImageFetchStatus: BackgroundFetchStatus = .idle
     
     init() {
         emojiArt = EmojiArtModel()
@@ -25,6 +38,29 @@ class EmojiArtDocument: ObservableObject {
     }
     
     // MARK: - Intend(s)
+    private func fetchBackgroundImage() {
+        backgroundImage = nil
+        switch emojiArt.background {
+        case .url(let url):
+            self.backgroundImageFetchStatus = .fetching
+            DispatchQueue.global(qos: .userInitiated).async {
+                let imageData = try? Data(contentsOf: url)
+                DispatchQueue.main.async { [weak self] in
+                    if self?.emojiArt.background == EmojiArtModel.Background.url(url) {
+                        self?.backgroundImageFetchStatus = .idle
+                        if let imageData = imageData {
+                            self?.backgroundImage = UIImage(data: imageData)
+                        }
+                    }
+                }
+            }
+            
+        case .imageData(let data):
+            self.backgroundImage = UIImage(data: data)
+        default:
+            break
+        }
+    }
     
     func setBackground(_ background: EmojiArtModel.Background) {
         emojiArt.background = background

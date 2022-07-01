@@ -21,11 +21,18 @@ struct ContentView: View {
     var documentBodyView: some View {
         GeometryReader { geometry in
             ZStack {
-                Color.yellow
-                ForEach(viewModel.emojis, id: \.id) { emoji in
-                    Text(emoji.text)
-                        .font(.system(size: fontSize(for: emoji)))
-                        .position(position(for: emoji, in: geometry))
+                Color.white.overlay {
+                    OptionalImage(uiImage: viewModel.backgroundImage)
+                        .position(convertFromEmojiCoordinates((0,0), in: geometry))
+                }
+                if viewModel.backgroundImageFetchStatus == .fetching {
+                    ProgressView()
+                } else {
+                    ForEach(viewModel.emojis, id: \.id) { emoji in
+                        Text(emoji.text)
+                            .font(.system(size: fontSize(for: emoji)))
+                            .position(position(for: emoji, in: geometry))
+                    }
                 }
             }
             .onDrop(of: [.plainText, .url, .image], isTargeted: nil) { providers, location in
