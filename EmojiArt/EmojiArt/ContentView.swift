@@ -43,7 +43,7 @@ struct ContentView: View {
     
     private func drop(providers: [NSItemProvider], at location: CGPoint, in geometry: GeometryProxy) -> Bool {
         var found = providers.loadObjects(offType: URL.self) { url in
-            viewModel.setBackground(.url(url))
+            viewModel.setBackground(.url(url.imageURL))
         }
         
         if !found {
