@@ -38,6 +38,7 @@ struct ContentView: View {
                     }
                 }
             }
+            .clipped()
             .onDrop(of: [.plainText, .url, .image], isTargeted: nil) { providers, location in
                 return drop(providers: providers, at: location, in: geometry)
             }
@@ -96,7 +97,9 @@ struct ContentView: View {
     private func doubleTapToZoom(in size: CGSize) -> some Gesture {
         TapGesture(count: 2)
             .onEnded {
-                zoomToFit(viewModel.backgroundImage, in: size)
+                withAnimation {
+                    zoomToFit(viewModel.backgroundImage, in: size)
+                }
             }
     }
     
