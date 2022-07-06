@@ -15,6 +15,7 @@ enum BackgroundFetchStatus {
 class EmojiArtDocument: ObservableObject {
     @Published private(set) var emojiArt: EmojiArtModel {
         didSet {
+            autoSave()
             if emojiArt.background != oldValue.background {
                 fetchBackgroundImage()
             }
@@ -24,9 +25,14 @@ class EmojiArtDocument: ObservableObject {
     @Published var backgroundImageFetchStatus: BackgroundFetchStatus = .idle
     
     init() {
-        emojiArt = EmojiArtModel()
-        emojiArt.addEmoji(text: "☺️", at: (-200, 100), size: 40)
-        emojiArt.addEmoji(text: "🍎", at: (50, 100), size: 80)
+        if let url = AutoSave.url, let autoSaveEmoji = try? EmojiArtModel(url: url) {
+            emojiArt = autoSaveEmoji
+            fetchBackgroundImage()
+        } else {
+            emojiArt = EmojiArtModel()
+        }
+//        emojiArt.addEmoji(text: "☺️", at: (-200, 100), size: 40)
+//        emojiArt.addEmoji(text: "🍎", at: (50, 100), size: 80)
     }
     
     var emojis: [EmojiArtModel.Emoji] {
@@ -35,6 +41,34 @@ class EmojiArtDocument: ObservableObject {
     
     var background: EmojiArtModel.Background {
         emojiArt.background
+    }
+    
+    private struct AutoSave {
+        static let fileName = "AutoSaved.EmojiArt"
+        static var url: URL? {
+            let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+            return documentDirectory?.appendingPathComponent(fileName)
+        }
+    }
+    
+    private func autoSave() {
+        if let url = AutoSave.url {
+            save(url: url)
+        }
+    }
+    
+    func save(url: URL) {
+        let thisFunction = "\(String(describing: self)).\(#function)"
+        do {
+            let data: Data = try emojiArt.json()
+            print("\(thisFunction) json = \(String(data: data, encoding: .utf8) ?? "")")
+            try data.write(to: url)
+            print("\(thisFunction) success!")
+        } catch let encodingError where encodingError is EncodingError {
+            print("\(thisFunction) couldn't encode because \(encodingError.localizedDescription)")
+        } catch {
+            print("\(thisFunction): \(error)")
+        }
     }
     
     // MARK: - Intend(s)
