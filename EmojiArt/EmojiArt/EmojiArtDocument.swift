@@ -15,7 +15,7 @@ enum BackgroundFetchStatus {
 class EmojiArtDocument: ObservableObject {
     @Published private(set) var emojiArt: EmojiArtModel {
         didSet {
-            autoSave()
+            scheduleAutoSave()
             if emojiArt.background != oldValue.background {
                 fetchBackgroundImage()
             }
@@ -48,6 +48,15 @@ class EmojiArtDocument: ObservableObject {
         static var url: URL? {
             let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
             return documentDirectory?.appendingPathComponent(fileName)
+        }
+        static let coalescingInterval = 5.0
+    }
+    
+    private var timer: Timer?
+    private func scheduleAutoSave() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: AutoSave.coalescingInterval, repeats: false) { _ in
+            self.autoSave()
         }
     }
     
