@@ -23,14 +23,17 @@ struct ContentView: View {
             ZStack {
                 Color.white.overlay {
                     OptionalImage(uiImage: viewModel.backgroundImage)
+                        .scaleEffect(zoomScale)
                         .position(convertFromEmojiCoordinates((0,0), in: geometry))
                 }
+                .gesture(doubleTapToZoom(in: geometry.size))
                 if viewModel.backgroundImageFetchStatus == .fetching {
                     ProgressView()
                 } else {
                     ForEach(viewModel.emojis, id: \.id) { emoji in
                         Text(emoji.text)
                             .font(.system(size: fontSize(for: emoji)))
+                            .scaleEffect(zoomScale)
                             .position(position(for: emoji, in: geometry))
                     }
                 }
@@ -59,7 +62,7 @@ struct ContentView: View {
                 if let emoji = string.first, emoji.isEmoji {
                     viewModel.addEmoji(String(emoji),
                                        at: convertToEmojiCoordinates(location, in: geometry),
-                                       size: emojiDefaultFontSize)
+                                       size: emojiDefaultFontSize / zoomScale)
                 }
             }
         }
@@ -73,17 +76,35 @@ struct ContentView: View {
     
     private func convertToEmojiCoordinates(_ location: CGPoint, in geometry: GeometryProxy) -> (x: Int, y: Int) {
         let center = geometry.frame(in: .local).center
-        let location = CGPoint(x: location.x - center.x, y: location.y - center.y)
+        let location = CGPoint(x: location.x - center.x / zoomScale,
+                               y: location.y - center.y / zoomScale)
         return (Int(location.x), Int(location.y))
     }
     
     private func convertFromEmojiCoordinates(_ location: (x: Int, y: Int), in geometry: GeometryProxy) -> CGPoint {
         let center = geometry.frame(in: .local).center
-        return CGPoint(x: center.x + CGFloat(location.x), y: center.y + CGFloat(location.y))
+        return CGPoint(x: center.x + CGFloat(location.x) * zoomScale,
+                       y: center.y + CGFloat(location.y) * zoomScale)
     }
     
     private func fontSize(for emoji: EmojiArtModel.Emoji) -> CGFloat {
         CGFloat(emoji.size)
+    }
+    
+    @State private var zoomScale: CGFloat = 1
+    
+    private func doubleTapToZoom(in size: CGSize) -> some Gesture {
+        TapGesture(count: 2)
+            .onEnded {
+                zoomToFit(viewModel.backgroundImage, in: size)
+            }
+    }
+    
+    private func zoomToFit(_ image: UIImage?, in size: CGSize) {
+        guard let image = image, image.size.width > 0, image.size.height > 0, size.width > 0, size.height > 0  else { return }
+        let hZoom = size.width / image.size.width
+        let vZoom = size.height / image.size.height
+        zoomScale = min(hZoom, vZoom)
     }
     
     var paletteView: some View {
