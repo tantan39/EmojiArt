@@ -15,6 +15,7 @@ struct PaletteChooserView: View {
     @EnvironmentObject var store: PaletteStore
     @State var chosenPaletteIndex: Int = 0
 //    @State var editing: Bool = false
+    @State var managing: Bool = false
     @State private var paletteToEdit: Palette?
     
     var body: some View {
@@ -55,7 +56,12 @@ struct PaletteChooserView: View {
             chosenPaletteIndex = store.removePalette(at: chosenPaletteIndex)
         }
         
+        AnimateActionButton(title: "Manager", systemImage: "slider.vertical.3") {
+            managing = true
+        }
+        
         gotoMenu
+        
     }
     
     var gotoMenu: some View {
@@ -87,6 +93,9 @@ struct PaletteChooserView: View {
 //        })
         .popover(item: $paletteToEdit) { palette in
             PaletteEditor(palette: $store.palettes[palette])
+        }
+        .sheet(isPresented: $managing) {
+            PaletteManagerView()
         }
     }
     
