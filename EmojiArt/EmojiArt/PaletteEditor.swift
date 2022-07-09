@@ -19,8 +19,7 @@ struct PaletteEditor: View {
 
 struct PaletteEditor_Previews: PreviewProvider {
     static var previews: some View {
-        Text("Fix me")
-//        PaletteEditor()
+        PaletteEditor(palette: .constant(PaletteStore(name: "Preview").palette(at: 4)))
             .previewLayout(.fixed(width: 300, height: 350))
     }
 }
