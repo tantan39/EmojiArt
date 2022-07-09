@@ -38,6 +38,13 @@ extension RangeReplaceableCollection where Element: Identifiable {
     }
 }
 
+extension RangeReplaceableCollection where Element: Hashable {
+    func removeDuplicateCharacters() -> Self {
+        var set = Set<Element>()
+        return filter{ set.insert($0).inserted }
+    }
+}
+
 extension Character {
     var isEmoji: Bool {
         if let firstScalar = unicodeScalars.first, firstScalar.properties.isEmoji {
