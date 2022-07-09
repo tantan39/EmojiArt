@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Palette: Identifiable, Codable, Hashable {
     var name: String
-    let emojis: String
+    var emojis: String
     let id: Int
 }
 
