@@ -32,6 +32,19 @@ struct PaletteChooserView: View {
             Image(systemName: "paintpalette")
         }
         .font(emojiFont)
+        .contextMenu { contextMenu }
+    }
+    
+    @ViewBuilder
+    var contextMenu: some View {
+        AnimateActionButton(title: "New", systemImage: "plus") {
+            store.insertPalette(named: "New", emojis: "")
+        }
+        
+        AnimateActionButton(title: "Delete", systemImage: "minus.circle") {
+            
+            chosenPaletteIndex = store.removePalette(at: chosenPaletteIndex)
+        }
     }
     
     func bodyPaletteView(for palette: Palette) -> some View {
