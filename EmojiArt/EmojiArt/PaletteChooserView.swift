@@ -20,11 +20,14 @@ struct PaletteChooserView: View {
             paletteControlButton
             bodyPaletteView(for: store.palette(at: chosenPaletteIndex))
         }
+        .clipped()
     }
     
     var paletteControlButton: some View {
         Button {
-            chosenPaletteIndex = (chosenPaletteIndex + 1) % store.palettes.count
+            withAnimation {
+                chosenPaletteIndex = (chosenPaletteIndex + 1) % store.palettes.count
+            }
         } label: {
             Image(systemName: "paintpalette")
         }
@@ -38,8 +41,15 @@ struct PaletteChooserView: View {
                 .font(emojiFont)
 
         }
+        .id(palette.id)
+        .transition(rollTransition())
     }
     
+    func rollTransition() -> AnyTransition {
+        AnyTransition.asymmetric(
+            insertion: .offset(x: 0, y: emojiDefaultFontSize),
+            removal: .offset(x: 0, y: -emojiDefaultFontSize))
+    }
 }
 
 struct ScrollingEmojisView: View {
