@@ -14,7 +14,7 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 0) {
             documentBodyView
-            paletteView
+            PaletteChooserView()
         }
     }
     
@@ -143,13 +143,6 @@ struct ContentView: View {
         steadyStatePanOffset = .zero
         steadyStateZoomScale = min(hZoom, vZoom)
     }
-    
-    var paletteView: some View {
-        ScrollingEmojisView(emojis: testEmoji)
-            .font(.system(size: emojiDefaultFontSize))
-    }
-    
-    var testEmoji = "😀😆😜🤒🤕🤧💀☠️👻😈👹👺🐞🪲🕷🐶🐼🐸🍄☘️🌻🍏🍎🍉🥝🌭🍔🍕🍞🍼🍺🍾⏱🔌💡🕯"
     
 }
 
