@@ -39,3 +39,8 @@ struct AnimateActionButton: View {
         }
     }
 }
+
+struct IdentifiableAlert: Identifiable {
+    var id: String
+    var alert: () -> Alert
+}
