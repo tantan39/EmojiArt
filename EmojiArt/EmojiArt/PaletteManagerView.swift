@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PaletteManagerView: View {
     @EnvironmentObject var store: PaletteStore
+    @State private var editMode: EditMode = .inactive
     
     var body: some View {
         NavigationView {
@@ -16,14 +17,24 @@ struct PaletteManagerView: View {
                 ForEach(store.palettes) { palette in
                     NavigationLink(destination: PaletteEditor(palette: $store.palettes[palette])) {
                         VStack(alignment: .leading) {
-                            Text(palette.name)
+                            Text(palette.name).font(editMode == .active ? .largeTitle : .caption)
                             Text(palette.emojis)
                         }
                     }
                 }
+                .onDelete { indexSet in
+                    store.palettes.remove(atOffsets: indexSet)
+                }
+                .onMove { indexSet, newOffset in
+                    store.palettes.move(fromOffsets: indexSet, toOffset: newOffset)
+                }
             }
+            .toolbar(content: {
+                EditButton()
+            })
             .navigationTitle("Manage Palletes")
             .navigationBarTitleDisplayMode(.inline)
+            .environment(\.editMode, $editMode)
         }
     }
 }
