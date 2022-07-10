@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var viewModel: EmojiArtDocument
     let emojiDefaultFontSize: CGFloat = 40
+    @State private var alertToShow: IdentifiableAlert?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -42,8 +43,25 @@ struct ContentView: View {
             .onDrop(of: [.plainText, .url, .image], isTargeted: nil) { providers, location in
                 return drop(providers: providers, at: location, in: geometry)
             }
+            .onChange(of: viewModel.backgroundImageFetchStatus, perform: { newValue in
+                switch newValue {
+                case .failed(let url):
+                    showBackgroundImageFetchFailedAlert(url)
+                default:
+                    break
+                }
+            })
             .gesture(panGesture().simultaneously(with: zoomGesture()))
+            .alert(item: $alertToShow) { alertToShow in
+                alertToShow.alert()
+            }
         }
+    }
+    
+    private func showBackgroundImageFetchFailedAlert(_ url: URL) {
+        alertToShow = IdentifiableAlert(id: "failed" + url.absoluteString, alert: {
+            Alert(title: Text("Background Image Fetch"), message: Text("Couldn't load image \(url.absoluteString)"), dismissButton: .default(Text("OK")))
+        })
     }
     
     private func drop(providers: [NSItemProvider], at location: CGPoint, in geometry: GeometryProxy) -> Bool {

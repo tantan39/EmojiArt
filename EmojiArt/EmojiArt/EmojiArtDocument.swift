@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-enum BackgroundFetchStatus {
+enum BackgroundFetchStatus: Equatable {
     case fetching
     case idle
+    case failed(URL)
 }
 
 class EmojiArtDocument: ObservableObject {
@@ -93,6 +94,9 @@ class EmojiArtDocument: ObservableObject {
                         self?.backgroundImageFetchStatus = .idle
                         if let imageData = imageData {
                             self?.backgroundImage = UIImage(data: imageData)
+                        }
+                        if self?.backgroundImage == nil {
+                            self?.backgroundImageFetchStatus = .failed(url)
                         }
                     }
                 }
