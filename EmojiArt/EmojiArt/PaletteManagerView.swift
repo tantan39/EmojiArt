@@ -10,6 +10,8 @@ import SwiftUI
 struct PaletteManagerView: View {
     @EnvironmentObject var store: PaletteStore
     @State private var editMode: EditMode = .inactive
+    @Environment(\.isPresented) var isPresented
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         NavigationView {
@@ -21,6 +23,7 @@ struct PaletteManagerView: View {
                             Text(palette.emojis)
                         }
                     }
+                    .gesture(editMode == .active ? tapGesture : nil)
                 }
                 .onDelete { indexSet in
                     store.palettes.remove(atOffsets: indexSet)
@@ -30,11 +33,28 @@ struct PaletteManagerView: View {
                 }
             }
             .toolbar(content: {
-                EditButton()
+                ToolbarItem {
+                    EditButton()
+                }
+                
+                ToolbarItem (placement: .navigationBarLeading) {
+                    if isPresented, UIDevice.current.userInterfaceIdiom != .pad {
+                        Button("Close") {
+                            dismiss()
+                        }
+                    }
+                }
+                
             })
             .navigationTitle("Manage Palletes")
             .navigationBarTitleDisplayMode(.inline)
             .environment(\.editMode, $editMode)
+        }
+    }
+    
+    var tapGesture: some Gesture {
+        TapGesture().onEnded { _ in
+            
         }
     }
 }
