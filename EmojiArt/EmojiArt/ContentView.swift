@@ -43,14 +43,17 @@ struct ContentView: View {
             .onDrop(of: [.plainText, .url, .image], isTargeted: nil) { providers, location in
                 return drop(providers: providers, at: location, in: geometry)
             }
-            .onChange(of: viewModel.backgroundImageFetchStatus, perform: { newValue in
+            .onChange(of: viewModel.backgroundImageFetchStatus) { newValue in
                 switch newValue {
                 case .failed(let url):
                     showBackgroundImageFetchFailedAlert(url)
                 default:
                     break
                 }
-            })
+            }
+            .onReceive(viewModel.$backgroundImage) { image in
+                zoomToFit(image, in: geometry.size)
+            }
             .gesture(panGesture().simultaneously(with: zoomGesture()))
             .alert(item: $alertToShow) { alertToShow in
                 alertToShow.alert()
