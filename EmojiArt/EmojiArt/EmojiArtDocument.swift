@@ -98,7 +98,7 @@ class EmojiArtDocument: ObservableObject {
                 .replaceError(with: nil)
                 .receive(on: DispatchQueue.main, options: .none)
                 .sink { [weak self] image in
-                    self?.backgroundImageFetchStatus = .idle
+                    self?.backgroundImageFetchStatus = image != nil ? .idle : .failed(url)
                     self?.backgroundImage = image
                 }
             
