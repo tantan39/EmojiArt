@@ -43,6 +43,10 @@ struct ContentView: View {
             .onDrop(of: [.plainText, .url, .image], isTargeted: nil) { providers, location in
                 return drop(providers: providers, at: location, in: geometry)
             }
+            .gesture(panGesture().simultaneously(with: zoomGesture()))
+            .alert(item: $alertToShow) { alertToShow in
+                alertToShow.alert()
+            }
             .onChange(of: viewModel.backgroundImageFetchStatus) { newValue in
                 switch newValue {
                 case .failed(let url):
@@ -53,10 +57,6 @@ struct ContentView: View {
             }
             .onReceive(viewModel.$backgroundImage) { image in
                 zoomToFit(image, in: geometry.size)
-            }
-            .gesture(panGesture().simultaneously(with: zoomGesture()))
-            .alert(item: $alertToShow) { alertToShow in
-                alertToShow.alert()
             }
         }
     }
