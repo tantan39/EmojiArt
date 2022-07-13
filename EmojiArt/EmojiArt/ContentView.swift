@@ -62,6 +62,9 @@ struct ContentView: View {
                     zoomToFit(image, in: geometry.size)
                 }
             }
+            .toolbar {
+                UndoButton(undo: undoManager?.optionalUndoMenuItemTile, redo: undoManager?.optionalRedoMenuItemTile)
+            }
         }
     }
     
