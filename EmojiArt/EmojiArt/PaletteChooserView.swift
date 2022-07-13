@@ -13,7 +13,9 @@ struct PaletteChooserView: View {
     var emojiFont: Font { .system(size: emojiDefaultFontSize) }
     
     @EnvironmentObject var store: PaletteStore
-    @State var chosenPaletteIndex: Int = 0
+    
+    @SceneStorage("PaletteChooserView.chosenPaletteIndex")
+    private var chosenPaletteIndex: Int = 0
 //    @State var editing: Bool = false
     @State var managing: Bool = false
     @State private var paletteToEdit: Palette?

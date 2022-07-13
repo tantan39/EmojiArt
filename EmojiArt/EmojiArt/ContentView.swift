@@ -11,6 +11,7 @@ struct ContentView: View {
     @ObservedObject var viewModel: EmojiArtDocument
     let emojiDefaultFontSize: CGFloat = 40
     @State private var alertToShow: IdentifiableAlert?
+    @State private var autoZoom: Bool = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -56,7 +57,9 @@ struct ContentView: View {
                 }
             }
             .onReceive(viewModel.$backgroundImage) { image in
-                zoomToFit(image, in: geometry.size)
+                if autoZoom {
+                    zoomToFit(image, in: geometry.size)
+                }
             }
         }
     }
@@ -69,12 +72,14 @@ struct ContentView: View {
     
     private func drop(providers: [NSItemProvider], at location: CGPoint, in geometry: GeometryProxy) -> Bool {
         var found = providers.loadObjects(offType: URL.self) { url in
+            autoZoom = true
             viewModel.setBackground(.url(url.imageURL))
         }
         
         if !found {
             found = providers.loadObjects(offType: UIImage.self) { image in
                 if let data = image.jpegData(compressionQuality: 1) {
+                    autoZoom = true
                     viewModel.setBackground(.imageData(data))
                 }
             }
