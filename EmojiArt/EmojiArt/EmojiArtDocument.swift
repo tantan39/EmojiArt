@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import UniformTypeIdentifiers
 
 enum BackgroundFetchStatus: Equatable {
     case fetching
@@ -14,7 +15,30 @@ enum BackgroundFetchStatus: Equatable {
     case failed(URL)
 }
 
-class EmojiArtDocument: ObservableObject {
+extension UTType {
+    static let emojiart = UTType(exportedAs: "com.tantran.emojiart")
+}
+
+class EmojiArtDocument: ReferenceFileDocument {
+    static var readableContentTypes: [UTType] = [UTType.emojiart]
+    static var writeableContentTypes: [UTType] = [UTType.emojiart]
+    
+    required init(configuration: ReadConfiguration) throws {
+        if let data = configuration.file.regularFileContents {
+            emojiArt = try EmojiArtModel(json: data)
+        } else {
+            throw CocoaError.init(.fileReadCorruptFile)
+        }
+    }
+    
+    func snapshot(contentType: UTType) throws -> Data {
+        try emojiArt.json()
+    }
+    
+    func fileWrapper(snapshot: Data, configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: snapshot)
+    }
+        
     @Published private(set) var emojiArt: EmojiArtModel {
         didSet {
             scheduleAutoSave()

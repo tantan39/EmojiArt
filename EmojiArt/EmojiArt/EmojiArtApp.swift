@@ -9,12 +9,12 @@ import SwiftUI
 
 @main
 struct EmojiArtApp: App {
-    @StateObject var viewModel = EmojiArtDocument()
+//    @StateObject var viewModel = EmojiArtDocument()
     @StateObject var paletteStore = PaletteStore(name: "PaletteStore")
     
     var body: some Scene {
-        WindowGroup {
-            ContentView(viewModel: viewModel)
+        DocumentGroup(newDocument: { EmojiArtDocument() }) { config in
+            ContentView(viewModel: config.document)
                 .environmentObject(paletteStore)
         }
     }
