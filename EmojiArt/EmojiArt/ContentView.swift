@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.undoManager) var undoManager
     @ObservedObject var viewModel: EmojiArtDocument
     let emojiDefaultFontSize: CGFloat = 40
     @State private var alertToShow: IdentifiableAlert?
@@ -73,14 +74,14 @@ struct ContentView: View {
     private func drop(providers: [NSItemProvider], at location: CGPoint, in geometry: GeometryProxy) -> Bool {
         var found = providers.loadObjects(offType: URL.self) { url in
             autoZoom = true
-            viewModel.setBackground(.url(url.imageURL))
+            viewModel.setBackground(.url(url.imageURL), undoManager: undoManager)
         }
         
         if !found {
             found = providers.loadObjects(offType: UIImage.self) { image in
                 if let data = image.jpegData(compressionQuality: 1) {
                     autoZoom = true
-                    viewModel.setBackground(.imageData(data))
+                    viewModel.setBackground(.imageData(data), undoManager: undoManager)
                 }
             }
         }
@@ -90,7 +91,8 @@ struct ContentView: View {
                 if let emoji = string.first, emoji.isEmoji {
                     viewModel.addEmoji(String(emoji),
                                        at: convertToEmojiCoordinates(location, in: geometry),
-                                       size: emojiDefaultFontSize / zoomScale)
+                                       size: emojiDefaultFontSize / zoomScale,
+                                    undoManager: undoManager)
                 }
             }
         }
