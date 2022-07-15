@@ -62,10 +62,31 @@ struct ContentView: View {
                     zoomToFit(image, in: geometry.size)
                 }
             }
-            .toolbar {
-                UndoButton(undo: undoManager?.optionalUndoMenuItemTile, redo: undoManager?.optionalRedoMenuItemTile)
+            .compactableToolbar {
+                AnimateActionButton(title: "Paste Background", systemImage: "doc.on.clipboard") {
+                    pasteBackground()
+                }
+                
+                if let undoManager = undoManager {
+                    if undoManager.canUndo {
+                        AnimateActionButton(title: undoManager.undoActionName, systemImage: "arrow.uturn.backward") {
+                            undoManager.undo()
+                        }
+                        
+                    }
+                    
+                    if undoManager.canRedo {
+                        AnimateActionButton(title: undoManager.redoActionName, systemImage: "arrow.uturn.forward") {
+                            undoManager.redo()
+                        }
+                    }
+                }
             }
         }
+    }
+    
+    private func pasteBackground() {
+        
     }
     
     private func showBackgroundImageFetchFailedAlert(_ url: URL) {
@@ -95,7 +116,7 @@ struct ContentView: View {
                     viewModel.addEmoji(String(emoji),
                                        at: convertToEmojiCoordinates(location, in: geometry),
                                        size: emojiDefaultFontSize / zoomScale,
-                                    undoManager: undoManager)
+                                       undoManager: undoManager)
                 }
             }
         }
@@ -149,7 +170,7 @@ struct ContentView: View {
     @GestureState private var gestureZoomScale: CGFloat = 1
     
     private func zoomGesture() -> some Gesture {
-         MagnificationGesture()
+        MagnificationGesture()
             .updating($gestureZoomScale, body: { latestGestureScale, gestureZoomScale, transaction in
                 gestureZoomScale = latestGestureScale
             })
