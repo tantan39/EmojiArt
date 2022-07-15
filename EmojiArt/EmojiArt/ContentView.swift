@@ -66,6 +66,12 @@ struct ContentView: View {
                     pasteBackground()
                 }
                 
+                if Camera.isAvailable {
+                    AnimateActionButton(title: "Camera", systemImage: "camera") {
+                        
+                    }
+                }
+                
                 if let undoManager = undoManager {
                     if undoManager.canUndo {
                         AnimateActionButton(title: undoManager.undoActionName, systemImage: "arrow.uturn.backward") {
@@ -81,7 +87,33 @@ struct ContentView: View {
                     }
                 }
             }
+            .sheet(item: $backgroundPicker) { picker in
+                switch picker {
+                case .camera:
+                    Camera { image in
+                        handlePickedBackgroundImage(image)
+                    }
+                case .library:
+                    EmptyView()
+                }
+            }
         }
+    }
+    
+    @State private var backgroundPicker: BackgroundPickerType?
+    
+    enum BackgroundPickerType: String, Identifiable {
+        var id: String { rawValue }
+        case camera
+        case library
+    }
+    
+    private func handlePickedBackgroundImage(_ image: UIImage?) {
+        autoZoom = true
+        if let imageData = image?.jpegData(compressionQuality: 1.0) {
+            viewModel.setBackground(.imageData(imageData), undoManager: undoManager)
+        }
+        backgroundPicker = nil
     }
     
     private func pasteBackground() {

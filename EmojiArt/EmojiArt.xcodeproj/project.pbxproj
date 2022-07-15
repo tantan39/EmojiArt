@@ -11,6 +11,7 @@
 		B401465C28791865006D6ACB /* PaletteChooserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401465B28791865006D6ACB /* PaletteChooserView.swift */; };
 		B401465E2879CC86006D6ACB /* PaletteEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401465D2879CC86006D6ACB /* PaletteEditor.swift */; };
 		B40146602879E03C006D6ACB /* PaletteManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401465F2879E03C006D6ACB /* PaletteManagerView.swift */; };
+		B40146632881C06E006D6ACB /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40146622881C06E006D6ACB /* Camera.swift */; };
 		B4E8E5C3286A360B00A6B33F /* EmojiArtApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8E5C2286A360B00A6B33F /* EmojiArtApp.swift */; };
 		B4E8E5C5286A360B00A6B33F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8E5C4286A360B00A6B33F /* ContentView.swift */; };
 		B4E8E5C7286A360F00A6B33F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4E8E5C6286A360F00A6B33F /* Assets.xcassets */; };
@@ -28,6 +29,7 @@
 		B401465D2879CC86006D6ACB /* PaletteEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteEditor.swift; sourceTree = "<group>"; };
 		B401465F2879E03C006D6ACB /* PaletteManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteManagerView.swift; sourceTree = "<group>"; };
 		B4014661287F0E8C006D6ACB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B40146622881C06E006D6ACB /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		B4E8E5BF286A360B00A6B33F /* EmojiArt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmojiArt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E8E5C2286A360B00A6B33F /* EmojiArtApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiArtApp.swift; sourceTree = "<group>"; };
 		B4E8E5C4286A360B00A6B33F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 				B401465F2879E03C006D6ACB /* PaletteManagerView.swift */,
 				B4E8E5D0286A378800A6B33F /* EmojiArtModel.swift */,
 				B4E8E5D2286A38AD00A6B33F /* Background.swift */,
+				B40146622881C06E006D6ACB /* Camera.swift */,
 				B4E8E5D6286B52F600A6B33F /* UtilityExtensions.swift */,
 				B4E8E62B286F546F00A6B33F /* UtilityViews.swift */,
 				B4E8E5C6286A360F00A6B33F /* Assets.xcassets */,
@@ -174,6 +177,7 @@
 				B4E8E5D7286B52F600A6B33F /* UtilityExtensions.swift in Sources */,
 				B4E8E5D5286A4A6C00A6B33F /* EmojiArtDocument.swift in Sources */,
 				B4E8E5D1286A378800A6B33F /* EmojiArtModel.swift in Sources */,
+				B40146632881C06E006D6ACB /* Camera.swift in Sources */,
 				B4E8E5D3286A38AD00A6B33F /* Background.swift in Sources */,
 				B40146602879E03C006D6ACB /* PaletteManagerView.swift in Sources */,
 				B401465C28791865006D6ACB /* PaletteChooserView.swift in Sources */,
