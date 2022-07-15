@@ -108,6 +108,7 @@ extension View {
                 self.navigationBarTitleDisplayMode(.inline)
                     .dismissable(dismiss)
             }
+            .navigationViewStyle(.stack)
         } else {
             self
         }
