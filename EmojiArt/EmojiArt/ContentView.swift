@@ -86,7 +86,15 @@ struct ContentView: View {
     }
     
     private func pasteBackground() {
-        
+        if let imageData = UIPasteboard.general.image?.jpegData(compressionQuality: 1.0) {
+            viewModel.setBackground(.imageData(imageData), undoManager: undoManager)
+        } else if let url = UIPasteboard.general.url?.imageURL {
+            viewModel.setBackground(.url(url), undoManager: undoManager)
+        } else {
+            alertToShow = IdentifiableAlert(id: "failed", alert: {
+                Alert(title: Text("Paste Background"), message: Text("There is no image currently on pasteboard"), dismissButton: .default(Text("OK")))
+            })
+        }
     }
     
     private func showBackgroundImageFetchFailedAlert(_ url: URL) {
