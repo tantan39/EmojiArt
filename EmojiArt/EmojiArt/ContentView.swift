@@ -24,11 +24,10 @@ struct ContentView: View {
     var documentBodyView: some View {
         GeometryReader { geometry in
             ZStack {
-                Color.white.overlay {
-                    OptionalImage(uiImage: viewModel.backgroundImage)
-                        .scaleEffect(zoomScale)
-                        .position(convertFromEmojiCoordinates((0,0), in: geometry))
-                }
+                Color.white
+                OptionalImage(uiImage: viewModel.backgroundImage)
+                    .scaleEffect(zoomScale)
+                    .position(convertFromEmojiCoordinates((0,0), in: geometry))
                 .gesture(doubleTapToZoom(in: geometry.size))
                 if viewModel.backgroundImageFetchStatus == .fetching {
                     ProgressView()
